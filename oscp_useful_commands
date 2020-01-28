@@ -1,0 +1,61 @@
+Commands
+--------------------------------------------------------------------------------
+VPN login
+openvpn connectionpack.ovpn
+user:<check email>
+pass:<check email>
+
+RDP
+rdesktop -u user -p password 10.10.10.1 -g 80%
+
+--------------------------------------------------------------------------------
+Netcat/Ncat/NC
+
+Connecting to a port
+nc -nv 10.10.10.1 4444
+
+netcat listener
+nc -nlvp 4444
+
+--------------------------------------------------------------------------------
+Nmap
+
+First Scan(Scanning with safe scripts, standard service detection and output them to a txt file)
+nmap -sC -sV -oA nmap_scan 10.10.10.1
+
+TCP all port scan
+nmap -p- 10.10.10.1
+
+UDP Scan
+nmap -sU 10.10.10.1
+
+Individual NSE script scan (e.g. smb vulnerability scan)
+nmap --script=*smb*.nse -p 139,445 10.10.10.1
+
+--------------------------------------------------------------------------------
+SMB/NETBIOS Enumeration (Port 135,139,445)
+
+enum4linux
+enum4linux 10.10.10.1
+
+smbclient
+smbclient -L \\\\10.10.10.1
+
+rpcclient
+rpcclient -U "" 10.10.10.1
+
+nbtscan
+nbtscan -r 10.10.10.1
+
+nmap nse
+nmap -p 139,445 --script=smb-os-discovery 10.10.10.1
+
+--------------------------------------------------------------------------------
+SNMP Enumeration (Port 161)
+
+snmp-check 10.10.10.1
+
+--------------------------------------------------------------------------------
+
+
+
