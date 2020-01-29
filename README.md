@@ -1,5 +1,3 @@
-# oscp_useful_commands
+# oscp_useful_notes
 
-
-A simple text file that contains useful commands for basic penetration testing. 
-
+--oscp_useful_commands.txt
