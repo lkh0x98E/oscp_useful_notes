@@ -156,3 +156,13 @@ Exploits compiling
 gcc -o exploit exploit.c (for 64 bits)
 gcc -m32 -o exploit exploit.c (for 32 bits)
 gcc -m32 -Wall -Wl,--hash-style=both -o gimme.o gimme.c (cross-compile)
+
+
+TCPdump
+=======
+tcpdump -i eth0 -XX -w output.pcap
+
+
+PSexec
+======
+psexec /accepteula \\192.168.1.1 -u domain\admin -p password -c -f \\192.168.1.1\share\file.exe

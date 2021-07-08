@@ -1,0 +1,47 @@
+Notes
+
+1. Introduction
+2. Privilege Escalation in Linux
+3. Understanding Permissions in Linux
+4. Spawning Root Shells
+5. Privilege Escalation Tools
+6. Kernel Exploits
+7. Service Exploits
+8. Weak File Permissions
+9. Sudo
+10. Cron Jobs
+11. SUID / SGID Executables
+12. Passwords & Keys
+13. NFS
+14. Privilege Escalation Strategy
+
+
+=============================================
+
+6.dirtyc0w exploit
+
+7.if x64 system, ensure that the gcc commands have -fPIC
+e.g. gcc -g -c raptor_udf2.c -fPIC
+
+8.if /etc/shadow is world writable, then generate a new password by using this command
+e.g. mkpasswd -m sha-516 <password>
+
+if /etc/passwd is editable, then use this,
+e.g. openssl passwd “password”
+
+if found RSA key on the machine, then copy it to local machine
+then chmod 600 root_key
+
+9. if sudo -l lists apache2, one method would be to use this command to read shadow file as apache2 will throw out the first line as error msg.
+e.g. sudo apache2 -f /etc/shadow
+
+
+11.if running script have the symbol ^M error, use this method to remove the ^M character
+e.g. sed -i -e “s/^M//" 38535.sh
+then run the script again
+
+13.NFS shares
+
+
+LSE script
+./lse.sh -l 1 -i
